@@ -1,0 +1,195 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: royal-bpm-task
+  description: External task for camunda BPM
+basePath: /v1
+tags:
+  - name: Examples
+    description: Simple example endpoints
+  - name: Specification
+    description: The swagger API specification
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+definitions:
+  ExampleBody:
+    type: object
+    title: example
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        example: no_stress
+  LoginBody:
+    type: object
+    title: Login
+    required:
+      - username
+      - password
+    properties:
+      username:
+        type: string
+        example: demo
+      password:
+        type: string
+        example: demo
+  OSBody:
+    type: object
+    title: Login
+    required:
+      - variables
+    properties:
+      variables:
+        type: object
+        example: { 'transferencia': { 'value': true } }
+        default: {}
+        description: 'Objeto con las variables requeridas para iniciar la OS'
+  OSTaskBody:
+    type: object
+    title: Task body
+    required:
+      - processInstanceId
+    properties:
+      processInstanceId:
+        type: string
+        example: demo
+      variables:
+        type: object
+        example: { 'transferencia': { 'value': true } }
+        default: {}
+        description: 'Objeto con las variables a almacenar con la ejecucion de la tarea'
+  OSBodyByUser:
+    type: object
+    title: Login
+    required:
+      - username
+    properties:
+      username:
+        type: string
+        example: demo
+
+paths:
+  /user:
+    post:
+      tags:
+        - User
+      description: Login
+      parameters:
+        - name: login
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LoginBody'
+      responses:
+        200:
+          description: Returns login success or false
+
+  /os/start:
+    post:
+      tags:
+        - OS
+      description: Iniciar Orden de servicio
+      parameters:
+        - name: os
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OSBody'
+      responses:
+        200:
+          description: Start a order of services
+  /os/complete-task:
+    post:
+      tags:
+        - OS
+      description: Completar Order services
+      parameters:
+        - name: os
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OSTaskBody'
+      responses:
+        200:
+          description: Complete a order of services
+  /os/task-by-user:
+    post:
+      tags:
+        - OS
+      description: Order services task by User
+      parameters:
+        - name: os
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OSBodyByUser'
+      responses:
+        200:
+          description: Returns all order of services
+  /os/task/{id}:
+    get:
+      tags:
+        - OS
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the example to retrieve
+          type: string
+      responses:
+        200:
+          description: Return the task OS with the specified id
+        404:
+          description: Example not found
+
+  /examples:
+    get:
+      tags:
+        - Examples
+      description: Fetch all examples
+      responses:
+        200:
+          description: Returns all examples
+    post:
+      tags:
+        - Examples
+      description: Create a new example
+      parameters:
+        - name: example
+          in: body
+          description: an example
+          required: true
+          schema:
+            $ref: '#/definitions/ExampleBody'
+      responses:
+        200:
+          description: Returns all examples
+
+  /examples/{id}:
+    get:
+      tags:
+        - Examples
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the example to retrieve
+          type: integer
+      responses:
+        200:
+          description: Return the example with the specified id
+        404:
+          description: Example not found
+
+  /spec:
+    get:
+      tags:
+        - Specification
+      responses:
+        200:
+          description: Return the API specification
