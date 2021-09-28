@@ -2,13 +2,17 @@ import constants from '../../../common/constants';
 import engine from '../camunda-engine/camunda.service';
 
 class OSService {
-  all() {
-    return false;
+  constructor() {
+    this.processDefinitionKey = constants.OS_PROCESS_INSTANCE_ID;
   }
 
-  byUser(params) {
+  all() {
+    return engine.getProcessInstances(this.processDefinitionKey);
+  }
+
+  taskByUser(params) {
     const { username } = params;
-    return engine.getTasksByUser(username);
+    return engine.getTasksByUser(this.processDefinitionKey, username);
   }
 
   byId(id) {
@@ -21,9 +25,7 @@ class OSService {
   }
 
   startOS(params) {
-    const processDefinitionId = constants.OS_PROCESS_INSTANCE_ID;
-    const { variables } = params;
-    return engine.startOS(processDefinitionId, variables);
+    return engine.startOS(this.processDefinitionKey, params);
   }
 }
 

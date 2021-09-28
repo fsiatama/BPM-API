@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { sortBy } from 'lodash';
 import l from '../../../common/logger';
 
 class CamundaService {
@@ -55,12 +56,61 @@ class CamundaService {
     }
   }
 
-  async getTasksByUser(username) {
+  async getProcessInstances(processDefinitionKey) {
     try {
-      const url =
-        username === 'admin'
-          ? `${this.baseUrl}task/`
-          : `${this.baseUrl}task/?assignee=${username}`;
+      let url = `${this.baseUrl}history/process-instance?processDefinitionKey=${processDefinitionKey}`;
+      const result = await this.requestGet(url).then(async res => {
+        if (!res.success) {
+          return res;
+        }
+        const { data } = res;
+        const items = [];
+
+        await data.reduce(async (a, item) => {
+          // Wait for the previous item to finish processing
+          await a;
+          // Process this item
+          const { id } = item;
+          url = `${this.baseUrl}history/activity-instance/?processInstanceId=${id}`;
+
+          let history = await this.requestGet(url)
+            .then(hs => {
+              if (!hs.success) {
+                return [];
+              }
+              return hs.data;
+            })
+            .catch(() => []);
+
+          history = sortBy(history, dateObj => new Date(dateObj.startTime));
+
+          items.push({
+            ...item,
+            history,
+          });
+        }, Promise.resolve());
+
+        return {
+          ...res,
+          data: items,
+        };
+      });
+      return Promise.resolve(result);
+    } catch (error) {
+      return Promise.resolve({
+        success: false,
+        error: 'Error consultando el motor BPM',
+      });
+    }
+  }
+
+  async getTasksByUser(processDefinitionKey, username) {
+    try {
+      let url = `${this.baseUrl}task/?processDefinitionKey=${processDefinitionKey}`;
+
+      if (username !== 'admin') {
+        url += `&assignee=${username}`;
+      }
       const result = await this.requestGet(url);
       return Promise.resolve(result);
     } catch (error) {
@@ -84,10 +134,10 @@ class CamundaService {
     }
   }
 
-  async startOS(processDefinitionId) {
+  async startOS(processDefinitionKey, params) {
     try {
-      const url = `${this.baseUrl}process-definition/key/${processDefinitionId}/submit-form`;
-      const result = await this.requestPost(url);
+      const url = `${this.baseUrl}process-definition/key/${processDefinitionKey}/submit-form`;
+      const result = await this.requestPost(url, params);
       return Promise.resolve(result);
     } catch (error) {
       return Promise.resolve({

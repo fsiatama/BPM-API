@@ -43,7 +43,11 @@ definitions:
     title: Login
     required:
       - variables
+      - businessKey
     properties:
+      businessKey:
+        type: string
+        example: OS-5874
       variables:
         type: object
         example: { 'transferencia': { 'value': true } }
@@ -74,6 +78,43 @@ definitions:
         example: demo
 
 paths:
+  /login/account:
+    post:
+      tags:
+        - User
+      description: Login
+      parameters:
+        - name: account
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LoginBody'
+      responses:
+        200:
+          description: Returns login success or false
+  /login/current-user:
+    post:
+      tags:
+        - User
+      description: Get the current user info
+      parameters:
+        - name: login
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OSBodyByUser'
+      responses:
+        200:
+          description: Returns login success or false
+  /login/log-out:
+    get:
+      tags:
+        - User
+      description: Log out user
+      responses:
+        200:
+          description: Returns login success or false
+
   /user:
     post:
       tags:
@@ -89,6 +130,15 @@ paths:
         200:
           description: Returns login success or false
 
+  /os:
+    get:
+      tags:
+        - OS
+      description: Fetch all service orders
+      responses:
+        200:
+          description: Returns all service orders
+
   /os/start:
     post:
       tags:
@@ -102,7 +152,7 @@ paths:
             $ref: '#/definitions/OSBody'
       responses:
         200:
-          description: Start a order of services
+          description: Start a service order
   /os/complete-task:
     post:
       tags:

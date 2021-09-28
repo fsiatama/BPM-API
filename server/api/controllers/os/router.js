@@ -5,6 +5,6 @@ export default express
   .Router()
   .get('/', controller.all)
   .get('/task/:id', controller.byId)
-  .post('/task-by-user', controller.byUser)
+  .post('/task-by-user', controller.taskByUser)
   .post('/start', controller.startOS)
   .post('/complete-task', controller.completeTask);

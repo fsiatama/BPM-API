@@ -19,8 +19,8 @@ export class Controller {
       });
   }
 
-  byUser(req, res) {
-    OSService.byUser(req.body)
+  taskByUser(req, res) {
+    OSService.taskByUser(req.body)
       .then(r => res.json(r))
       .catch(err => {
         l.error('error in get task by id');
