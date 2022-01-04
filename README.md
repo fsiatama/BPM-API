@@ -1,6 +1,6 @@
-# royal-bpm-task
+# Process Automation task API
 
-External task for camunda BPM
+Simple application for educational purposes and try camunda BPM built with [NodeJS](https://nodejs.org/) and [Camunda](https://camunda.com/)
 
 ## Get Started
 
@@ -54,66 +54,12 @@ npm run compile
 npm start
 ```
 
-## Test It
-
-Run the Mocha unit tests
-
-```shell
-npm test
-```
-
-or debug them
-
-```shell
-npm run test:debug
-```
-
 ## Try It
 * Open your browser to [http://localhost:3000](http://localhost:3000)
 * Invoke the `/examples` endpoint 
   ```shell
   curl http://localhost:3000/v1/examples
   ```
-
-
-## Debug It
-
-#### Debug the server:
-
-```
-npm run dev:debug
-```
-
-#### Debug Tests
-
-```
-npm run test:debug
-```
-
-#### Debug with VSCode
-
-Add these [contents](https://github.com/cdimascio/generator-express-no-stress/blob/next/assets/.vscode/launch.json) to your `.vscode/launch.json` file
-## Lint It
-
-View airbnb linter output
-
-```
-npm run lint
-```
-
-Fix all airbnb linter errors
-
-```
-npm run lint
-```
-
-## Deploy It
-
-Deploy to CloudFoundry
-
-```shell
-cf push royal-bpm-task
-```
 
 
    
